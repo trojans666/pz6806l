@@ -1,0 +1,14 @@
+../Project/RVMDK/DebugConfig
+../Libraries/M3
+../Doc
+../Libraries/M3/startup/iar
+../Libraries/stm32f1_StdPeriph_Driver/src
+../Libraries/M3/startup/arm
+../Libraries/M3/startup/gcc
+../Project/RVMDK/Listings
+../Project/RVMDK/Objects
+pz
+../Project
+../Libraries/stm32f1_StdPeriph_Driver/inc
+../Project/RVMDK
+../Project/User
