@@ -1,6 +1,12 @@
+#include "bsp_target.h"
 
 int main(void)
 {
-	return 0;
+	bsp_target_init();
+	
+	while(1)
+	{
+	
+	}
 }
 

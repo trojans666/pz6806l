@@ -538,6 +538,11 @@
               <FilePath>..\User\bsp_target.c</FilePath>
             </File>
             <File>
+              <FileName>bsp_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\bsp_usart.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\main.c</FilePath>

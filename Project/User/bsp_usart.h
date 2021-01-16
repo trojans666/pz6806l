@@ -12,8 +12,8 @@
 #define USART3_SEND_BUF_LEN     128
 #define USART3_RECV_BUF_LEN     128
 
-#define USART_TXERR_TIME        10 /*!< 10ms */
-#define USART_RXOVER_TIME       3 /*!< 3ms */
+#define USART_TXERR_TIME        7 /*!< 7ms (MAX 7ms) */
+#define USART_RXOVER_TIME       3 /*!< 3ms (MAX 7ms) */
 
 typedef enum
 {
@@ -34,7 +34,7 @@ typedef struct
     uint16_t RecvBufferLen;
     uint16_t RecvBytes;
     uint16_t RecvPos;
-    uint16_t *RecvBuffer;
+    uint8_t *RecvBuffer;
 
     uint8_t txBusy:1;
     uint8_t rxBusy:1;
@@ -47,7 +47,7 @@ UsartBuf_Struct *bsp_get_usart(UsartCom com);
 
 void usart_rx_over_check(void);
 
-uint8_t usart_writedata(UsartCom iNum,uint8_t *pFrame,uint16_t iLength);
-uint8_t usart_read_data(UsartCom iNum,uint8_t *pFrame,uint16_t iLength);
+void usart_writedata(UsartCom iNum,uint8_t *pFrame,uint16_t iLength);
+void usart_read_data(UsartCom iNum,uint8_t *pFrame,uint16_t iLength);
 
 #endif

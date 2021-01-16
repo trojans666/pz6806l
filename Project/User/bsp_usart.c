@@ -4,7 +4,7 @@
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_usart.h"
 
-#include "bsp_include.h"
+#include "bsp_usart.h"
 
 /*!< USART2(RS485) PA2(TX) PA3(RX) */
 #define USART2_TX_APB          RCC_APB2Periph_GPIOA
@@ -247,21 +247,20 @@ UsartBuf_Struct *bsp_get_usart(UsartCom com)
     return p;
 }
 
+/* 定时器中断中使用 */
 void usart_rx_over_check(void)
 {
-    UsartBuf_Struct *p = (void*)0;
     uint8_t pos = 0;
     for(pos = 0;pos < USART_COM_MAX;pos++)
     {
-        p = mUsart[pos].p;
-        if(p->rxOverTime > 0)
+        if(mUsart[pos].p->rxOverTime > 0)
         {
-            p->rxOverTime--;
+            mUsart[pos].p->rxOverTime--;
         }
-        if(p->txBusy)
+        if(mUsart[pos].p->txBusy)
         {
-            if(p->txErrTime-- == 0)
-                p->rxBusy = 1;
+            if(mUsart[pos].p->txErrTime-- == 0)
+                mUsart[pos].p->rxBusy = 1;
         }
     }
 }
@@ -269,12 +268,11 @@ void usart_rx_over_check(void)
 static void usart_irq(UsartCom com)
 {
     unsigned char dat;
-    UsartBuf_Struct *p = mUsart[com].p;
     if(USART_GetITStatus(mUsart[com].u,USART_IT_RXNE) != RESET)
     {
         /*接收中断 */
         dat = USART_ReceiveData(mUsart[com].u);
-        if(mUsart[com].p->SendPos < mUsart[com].p->RecvBufferLen)
+        if(mUsart[com].p->RecvPos < mUsart[com].p->RecvBufferLen)
         {
             mUsart[com].p->RecvBuffer[mUsart[com].p->RecvPos] = dat;
             mUsart[com].p->RecvPos++;
@@ -294,7 +292,7 @@ static void usart_irq(UsartCom com)
         /* 发送中断 */
         if(mUsart[com].p->SendPos < mUsart[com].p->SendBytes)
         {
-            mUsart[com].u->DR = mUsart[com].p->SendBuffer(mUsart[com].p->SendPos);
+            mUsart[com].u->DR = mUsart[com].p->SendBuffer[mUsart[com].p->SendPos];
             mUsart[com].p->SendPos++;
 
             mUsart[com].p->txErrTime = USART_TXERR_TIME;
@@ -303,12 +301,88 @@ static void usart_irq(UsartCom com)
         {
             mUsart[com].p->txErrTime = 0;
             mUsart[com].p->txBusy = 0;
+						mUsart[com].p->SendPos = 0;
+						mUsart[com].p->SendBytes = 0;
+					
             /* 收发切换(rs485) switch to read mode */
-
+						
+						USART_ITConfig(mUsart[com].u,USART_IT_TXE,DISABLE);
+						USART_ITConfig(mUsart[com].u,USART_IT_TC,ENABLE);
         }
         USART_ClearFlag(mUsart[com].u,USART_FLAG_TXE);
     }
+		
+		if(USART_GetITStatus(mUsart[com].u,USART_IT_TC) != RESET)
+		{
+				USART_ITConfig(mUsart[com].u,USART_IT_TC,DISABLE);
+				USART_ClearFlag(mUsart[com].u,USART_FLAG_TC);
+		}
 }
 
-uint8_t usart_writedata(UsartCom iNum,uint8_t *pFrame,uint16_t iLength);
-uint8_t usart_read_data(UsartCom iNum,uint8_t *pFrame,uint16_t iLength);
+void USART1_IRQHandler(void)
+{
+		usart_irq(USART_COM1);
+}
+
+void USART2_IRQHandler(void)
+{
+		usart_irq(USART_COM2);
+}
+
+void USART3_IRQHandler(void)
+{
+		usart_irq(USART_COM3);
+}
+
+void usart_writedata(UsartCom iNum,uint8_t *pFrame,uint16_t iLength)
+{
+		uint8_t *dat = pFrame;
+		uint16_t len = iLength;
+	
+		/* iLength < mUsart[iNum].p->SendBufferLen; */
+	
+		if(mUsart[iNum].p->rxBusy)
+		{
+				mUsart[iNum].p->txBusy = 0;
+				mUsart[iNum].p->txBusy = 0;
+		}
+		
+		while(len--)
+		{
+				mUsart[iNum].p->SendBuffer[mUsart[iNum].p->SendPos] = *dat;
+				mUsart[iNum].p->SendPos++;
+				dat++;
+		}
+		
+		if(0 == mUsart[iNum].p->txBusy)
+		{
+			/* 转换模式为 发送 引脚转换*/
+			
+			
+			mUsart[iNum].p->txBusy = 1;
+			mUsart[iNum].p->rxBusy = 0;
+			mUsart[iNum].p->txErrTime = USART_TXERR_TIME;
+			
+			USART_ITConfig(mUsart[iNum].u,USART_IT_TXE,ENABLE);
+		}
+}
+
+void usart_clear_recvbuf(UsartCom iNum)
+{
+	  (void)memset(mUsart[iNum].p->RecvBuffer,0x00,mUsart[iNum].p->RecvBufferLen);
+		mUsart[iNum].p->RecvBytes = 0;
+		mUsart[iNum].p->RecvPos = 0;
+}
+
+/* 也可以把函数里的内容复制到中断中执行,这样就免除了拷贝操作 */
+void usart_read_data(UsartCom iNum,uint8_t *pFrame,uint16_t iLength)
+{
+		uint16_t len;
+		if(mUsart[iNum].p->rxOverTime == 0)
+		{
+			len = iLength > mUsart[iNum].p->RecvBytes ? mUsart[iNum].p->RecvBytes : iLength;
+			memcpy(pFrame,mUsart[iNum].p->RecvBuffer,len);
+			
+			usart_clear_recvbuf(iNum);
+		}
+}

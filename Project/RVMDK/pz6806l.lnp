@@ -27,6 +27,7 @@
 ".\stm32f10x_it.o"
 ".\system_stm32f10x.o"
 ".\bsp_target.o"
+".\bsp_usart.o"
 ".\main.o"
 --strict --scatter ".\pz6806l.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols

@@ -199,7 +199,15 @@
 ../Project/RVMDK/stm32f10x_wwdg.d
 ../Project/RVMDK/system_stm32f10x.crf
 ../Project/RVMDK/system_stm32f10x.d
+../Project/User/bsp_flash.c
+../Project/User/bsp_flash.h
+../Project/User/bsp_i2c.c
+../Project/User/bsp_i2c.h
 ../Project/User/bsp_include.h
+../Project/User/bsp_spi.c
+../Project/User/bsp_spi.h
+../Project/User/bsp_string.c
+../Project/User/bsp_string.h
 ../Project/User/bsp_target.c
 ../Project/User/bsp_target.h
 ../Project/User/bsp_usart.c

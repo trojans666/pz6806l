@@ -28,4 +28,7 @@
 .\bsp_target.o: ..\..\Libraries\stm32f1_StdPeriph_Driver\inc\stm32f10x_usart.h
 .\bsp_target.o: ..\..\Libraries\stm32f1_StdPeriph_Driver\inc\stm32f10x_wwdg.h
 .\bsp_target.o: ..\..\Libraries\stm32f1_StdPeriph_Driver\inc\misc.h
+.\bsp_target.o: ..\User\bsp_include.h
+.\bsp_target.o: ..\User\public_data.h
+.\bsp_target.o: ..\User\bsp_usart.h
 .\bsp_target.o: ..\User\bsp_target.h

@@ -67,7 +67,7 @@ static void bsp_gpio_init(void)
     GPIO_Init(LED5_PORT,&GPIO_InitStructure);
 }
 
-static bsp_timer_init(void)
+static void bsp_timer_init(void)
 {
     RCC_ClocksTypeDef rcc_clk;
     TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
@@ -96,13 +96,13 @@ static bsp_timer_init(void)
 }
 
 /* 中断配置 */
-static bsp_nvic_init(void)
+static void bsp_nvic_init(void)
 {
     NVIC_InitTypeDef NVIC_InitStructure;
 
     /* 配置中断向量表 (存在偏移时） */
 
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0;);
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
     /* timer */
     NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;/* 抢占优先级 */
@@ -118,7 +118,7 @@ static bsp_nvic_init(void)
     NVIC_Init(&NVIC_InitStructure);
 }
 
-void bsp_watchdog_init(void)
+static void bsp_watchdog_init(void)
 {
     /* 内部看门狗 独立看门狗由 LSI提供时钟*/
     RCC_LSICmd(ENABLE);
@@ -139,6 +139,13 @@ void bsp_target_init(void)
 		disableInterrupt();
 
 		bsp_rcc_init();
-
+		bsp_gpio_init();
+		bsp_timer_init();
+		bsp_nvic_init();
+		bsp_usart_init();
+		bsp_watchdog_init();
+	
+	
+	
 		enableInterrupt();
 }
