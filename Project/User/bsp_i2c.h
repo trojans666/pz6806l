@@ -3,7 +3,7 @@
 
 #include "stm32f10x_gpio.h"
 
-#define IIC_OPT_WRTIE       0x0 /*!< iicÐ´²Ù×÷ */
+#define IIC_OPT_WRITE       0x0 /*!< iicÐ´²Ù×÷ */
 #define IIC_OPT_READ        0x01 /*!< iic¶Á²Ù×÷ */
 
 #define I2C_OK          1

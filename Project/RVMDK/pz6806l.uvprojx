@@ -543,6 +543,26 @@
               <FilePath>..\User\bsp_usart.c</FilePath>
             </File>
             <File>
+              <FileName>bsp_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\bsp_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\bsp_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\bsp_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_string.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\bsp_string.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\main.c</FilePath>

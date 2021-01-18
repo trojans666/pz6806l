@@ -70,7 +70,7 @@ static struct spi_cs spi2_cs =
 
 static struct spi_priv mSpi[SPI_COM_MAX] =
 {
-    {SPI1,NULL,SPI_SPI_MODE_3 | SPI_SPI_MSB,8},
+    {SPI1,(void*)0,SPI_SPI_MODE_3 | SPI_SPI_MSB,8},
     {SPI2,&spi2_cs,SPI_SPI_MODE_3 | SPI_SPI_MSB,8}
 };
 

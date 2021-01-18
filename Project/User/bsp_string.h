@@ -2,6 +2,7 @@
 #define __BSP_STRING_H
 
 #include <stdint.h>
+#include <time.h>
 
 /******************************************************************************
 * 函数名 : HexToAscii()
@@ -59,7 +60,7 @@ uint32_t StrToHex(uint8_t *ptr,uint8_t len);
 ******************************************************************************/
 uint32_t HexToBcd(uint32_t Num);
 
-void GetYearMonDayStr(uint8_t *str,struct tm *Time);
+void GetYearMonDayStr(uint8_t *str,time_t *Time);
 
 /******************************************************************************
 * 函数名 : BitToChar()
@@ -93,7 +94,7 @@ void *memcpy_m(void *dest,const void *src,unsigned long n);
 
 void *memmove_m(void *dest,const void *src,unsigned long n);
 
-void *memcmp_m(const void *s1,const void *s2,unsigned long n);
+int memcmp_m(const void *s1,const void *s2,unsigned long n);
 
 int tolower_m(int c);
 
@@ -146,5 +147,9 @@ long long strtoll(const char *str,char **endptr,int base);
 int atoi(const char *s);
 int atol(const char *s);
 
+long long simple_strtoll(const char *cp,char **endp,unsigned int base);
+unsigned long long simple_strtoull(const char *cp,char **endp,unsigned int base);
+long simple_strtol(const char *cp,char **endp,unsigned int base);
+unsigned long simple_strtoul(const char *cp,char **endp,unsigned int base);
 
 #endif // MINI_LIBC_H

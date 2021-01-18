@@ -1,4 +1,6 @@
 #include <string.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 #include "bsp_string.h"
 
@@ -472,17 +474,17 @@ long atol_m(const char *s)
 /*************** string ************************/
 
 //是否为打印字符
-static int isprint_m(int ch)
-{
-    ch &= 0x7f;
-    return (ch >= 32 && ch < 127);
-}
+//static int isprint_m(int ch)
+//{
+//    ch &= 0x7f;
+//    return (ch >= 32 && ch < 127);
+//}
 
 //是否为英文字母
-static int isalpha_m(int ch)
-{
-    return (unsigned int)((ch | 0x20) - 'a') < 26u;
-}
+//static int isalpha_m(int ch)
+//{
+//    return (unsigned int)((ch | 0x20) - 'a') < 26u;
+//}
 
 //是否为数字
 static int isdigit_m(int ch)
@@ -506,15 +508,15 @@ static int isspace_m(int ch)
     }
 }
 
-static int isascii_m(int ch)
-{
-    return (((unsigned char)(c))<=0x7f);
-}
+//static int isascii_m(int ch)
+//{
+//    return (((unsigned char)(ch))<=0x7f);
+//}
 
-static int toascii_m(int ch)
-{
-    return (((unsigned char)(c))&0x7f);
-}
+//static int toascii_m(int ch)
+//{
+//    return (((unsigned char)(ch))&0x7f);
+//}
 
 static int isupper_m(int ch)
 {
@@ -541,7 +543,8 @@ static int isxdigit_m(int ch)
     return 0;
 }
 
-void *memset_m(void *s,int c,unsigned long n)
+
+void *memset_m(void *s,int c,unsigned long count)
 {
 #if 0
     char *xs = (char *)s;
@@ -613,7 +616,7 @@ void *memset_m(void *s,int c,unsigned long n)
 #undef TOO_SMALL_M
 }
 
-void *memcpy_m(void *dest,const void *src,unsigned long n)
+void *memcpy_m(void *dst,const void *src,unsigned long count)
 {
 #if 0
     char *tmp = (char *)dst, *s = (char *)src;
@@ -706,14 +709,16 @@ void *memmove_m(void *dest,const void *src,unsigned long n)
             *(tmp++) = *(s++);
         }
     }
+		
+		return dest;
 }
 
-void *memcmp_m(const void *cs,const void *ct,unsigned long n)
+int memcmp_m(const void *cs,const void *ct,unsigned long count)
 {
     const unsigned char *su1,*su2;
     int res = 0;
 
-    for(su1 == cs,su2 == ct; 0 < n; ++su1,++su2,count--)
+    for(su1 = cs,su2 = ct; 0 < count; ++su1,++su2,count--)
     {
         if((res = *su1 - *su2) != 0)
             break;
@@ -776,7 +781,7 @@ int strcasecmp_m(const char *a,const char *b)
     return ca - cb;
 }
 
-int strncasecmp_m(const char *cs,const char *ct,unsigned long len)
+int strncasecmp_m(const char *s1,const char *s2,unsigned long len)
 {
     register unsigned int x2;
     register unsigned int x1;
@@ -1055,7 +1060,7 @@ unsigned long strnlen_m(const char *s,unsigned long maxlen)
 
 char *strcpy_m(char *dest,const char *src)
 {
-    return strncmp_m(dest,src,strlen_m(strc) + 1);
+    return strncpy_m(dest,src,strlen_m(src) + 1);
 }
 
 char *strncpy_m(char *dest,const char *src,unsigned long n)
@@ -1114,8 +1119,11 @@ char *strncat_m(char *dest,const char *src,unsigned long count)
         while(*dest)
             dest++;
 
-        while((*dest++ = *src++))
+        //while((*dest++ = *src++))
+				while(1)
         {
+						*dest++ = *src++;
+					
             if(--count == 0)
             {
                 *dest = '\0';
@@ -1173,10 +1181,10 @@ char *strrchr_m(const char *t,int c)
         ++t;
     }
 
-    return (char *)l;
+    //return (char *)l;
 }
 
-char *strtok_m(char *s,const char *delim);
+char *strtok_m(char *s,const char *delim)
 {
     static char *strtok_pos;
     return strtok_r_m(s,delim,&strtok_pos);
@@ -1355,7 +1363,7 @@ int atoi(const char* s)
     return sign==-1?-v:v;
 }
 
-long int atol(const char* s)
+long int atol_(const char* s)
 {
     long int v=0;
     int sign=0;

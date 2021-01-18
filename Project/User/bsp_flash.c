@@ -22,7 +22,7 @@ void flash_read(uint32_t raddr,uint16_t *pBuffer,uint16_t num)
     }
 }
 
-void flash_write_analy(uint32_t waddr,uint16_t *pBuffer,uint16 num)
+void flash_write_analy(uint32_t waddr,uint16_t *pBuffer,uint16_t num)
 {
     uint8_t i;
     if((waddr / 1024) == ((waddr+num*2) / 1024))
@@ -75,11 +75,11 @@ void flash_write(uint32_t waddr,uint16_t *pBuffer,uint16_t num)
     uint16_t i;
     uint32_t offaddr; /* 去掉 0x08000000后的地址 */
 
-    if(waddr < FLASH_SIZE || (waddr >= (FLASH_BASE + 1024*FLASH_SIZE)))
+    if(waddr < FLASH_SIZE || (waddr >= (MACRO_FLASH_BASE + 1024*FLASH_SIZE)))
         return ; /* 地址非法 */
 
     FLASH_Unlock(); /* 解锁 */
-    offaddr = waddr - FLASH_BASE; /* 实际偏移地址 */
+    offaddr = waddr - MACRO_FLASH_BASE; /* 实际偏移地址 */
     secpos = offaddr / SECTOR_SIZE; /* 扇区地址 0~127 */
     secoff = (offaddr % SECTOR_SIZE) / 2; /* 在扇区内的偏移(2个字节为基本单位)*/
     secremain = SECTOR_SIZE / 2 - secoff; /* 扇区剩余空间大小 */
@@ -89,7 +89,7 @@ void flash_write(uint32_t waddr,uint16_t *pBuffer,uint16_t num)
     while(1)
     {
         /* 读取整个扇区的内容 */
-        flash_read(secpos*SECTOR_SIZE+FLASH_BASE,flashBuffer,SECTOR_SIZE/2);
+        flash_read(secpos*SECTOR_SIZE+MACRO_FLASH_BASE,flashBuffer,SECTOR_SIZE/2);
         for(i=0;i < secremain;i++) /* 校验数据 */
         {
             if(flashBuffer[secoff+i] != 0xFFFF)
@@ -97,14 +97,14 @@ void flash_write(uint32_t waddr,uint16_t *pBuffer,uint16_t num)
         }
         if(i < secremain) /*需要擦除 */
         {
-            FLASH_ErasePage(secpos * SECTOR_SIZE + FLASH_BASE); /* 擦除这个删除 */
+            FLASH_ErasePage(secpos * SECTOR_SIZE + MACRO_FLASH_BASE); /* 擦除这个删除 */
             for(i = 0;i < secremain;i++)
             {
                 /* 复制 */
                 flashBuffer[i + secoff] = pBuffer[i];
             }
             /* 写入整个扇区 */
-            flash_write_nocheck(secpos * SECTOR_SIZE + FLASH_BASE,flashBuffer,SECTOR_SIZE / 2);
+            flash_write_nocheck(secpos * SECTOR_SIZE + MACRO_FLASH_BASE,flashBuffer,SECTOR_SIZE / 2);
         }
         else
         {

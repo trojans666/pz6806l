@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-#include "stm32f10x_gpio.h"
-
 #define SPI_SPI_CPHA     (1<<0)                             /* bit[0]:CPHA, clock phase 相位*/
 #define SPI_SPI_CPOL     (1<<1)                             /* bit[1]:CPOL, clock polarity 极性*/
 
